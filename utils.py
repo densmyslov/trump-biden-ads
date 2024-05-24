@@ -140,7 +140,6 @@ def load_invoice_df(_s3_client, name, bucket = BUCKET, counter=None):
 
     MODEL = 'gemma-7b-it'
     api = 'groq'
-    bucket = 'bergena-invoice-parser'
     key = f"FCC/completions/file-classification/{api}/{MODEL}/completions_df.parquet"
     completions_df, _ = pd_read_parquet(_s3_client, bucket, key)
     completions_df['completion'] = completions_df['completion'].apply(lambda x: 
@@ -174,101 +173,5 @@ def pd_read_parquet(_s3_client,bucket,key,columns=None):
             return pd.read_parquet(buffer), last_modified
     except:
         return pd.DataFrame()
-
-
-class ConstructedText(object):
-  def __init__(self,
-               extracted_words,
-               tolerance,
-               max_symbols):
-    self.extracted_words = extracted_words
-    self.tolerance = tolerance
-    self.max_symbols = max_symbols
-
-    self.text_lines = self.get_constructed_text_lines_from_pdf(extracted_words)
-    self.constructed_text = ' '.join(self.text_lines)
-
-  def find_group_key(self, top, groups):
-    for group_key in groups.keys():
-        if abs(group_key - top) <= self.tolerance:
-            return group_key
-    return top
-
-  def get_constructed_text_lines_from_pdf(self,
-                                          extracted_words):
-
-      # extracted_words = extract_words_from_pdf_s3(buffer)
-      sorted_words = self.sort_pdf_extracted_words(extracted_words,
-                                                   round_coords = True)
-
-      line_width = int(max([i['right'] for i in sorted_words])) + 10
-
-      grouped_by_top = defaultdict(list)
-      for ind, item in enumerate(sorted_words):
-
-        text, top, left, right = list(item.values())
-        group_key = self.find_group_key(top, grouped_by_top)
-        # grouped_by_top[top].append((text, left, right))
-        grouped_by_top[group_key].append((text, left,right))
-
-      invoice_lines = []
-      for item in grouped_by_top.items():
-        values = item[1]
-        line = self.get_line_from_item(values)
-        invoice_lines.append(line)
-      if self.max_symbols:
-        invoice_lines = [line for line in invoice_lines if len(line.replace(' ','')) < self.max_symbols]
-
-      return invoice_lines
-
-  def get_line_from_item(self, items): # We start with an empty string
-    line = ""
-
-    # We initialize the end of the last word (x1) to 0
-    last_x1 = 0
-
-    # Now we loop through each item
-    for text, x0, x1 in items:
-        # Calculate the spaces needed before the current word starts
-        space_count = x0 - last_x1
-
-        # We add the calculated number of spaces to the line
-        line += ' ' * space_count
-
-        # We add the word itself to the line
-        line += text
-
-        # We update the last_x1 to the end of the current word
-        last_x1 = x1
-    return line
-
-  def sort_pdf_extracted_words(self, extracted_words, round_coords = True):
-
-    sorted_words = []
-    page_offset = 0
-
-    for page_num, items in extracted_words.items():
-
-
-      for i in items:
-          text = i['text']
-          x0 = i['x0']
-          x1 = i['x1']
-          top = i['top']+page_offset
-
-          if round_coords:
-            x0 = int(round(x0, 0))
-            x1 = int(round(x1, 0))
-            top = int(round(top, 0))
-
-          converted_coordinates = {
-                            'text': text,
-                            'top': top,
-                            'left': x0,
-                            'right': x1
-                              }
-          sorted_words.append(converted_coordinates)
-      page_offset+=converted_coordinates['top']
-    return sorted(sorted_words, key=lambda x: x['top'])
 
 

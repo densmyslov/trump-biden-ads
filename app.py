@@ -99,17 +99,6 @@ if st.button(":blue[Show selected files]"):
 
                     btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
                 
-                extracted_text_key = f"FCC/extracted_texts/{row.file_name}/extracted_text.json"
-                obj = s3_client.get_object(Bucket = utils.BUCKET,
-                                        Key = extracted_text_key)
-                extracted_words = json.loads(obj['Body'].read())
-                tolerance = 2
-                max_symbols=150
-                text_constructor = utils.ConstructedText(
-                                                        extracted_words,
-                                                        tolerance,
-                                                        max_symbols)
-                st.write(text_constructor.text_lines)
 
 st.write(files_df.query("completion.notna()").shape[0])
 
