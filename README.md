@@ -8,7 +8,7 @@ This repository is a demo of processing a collection of historical PDF documents
 - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Main Processing Tasks](#main-processing-tasks)
-    - [Pre-processing](#pre-processing)
+    - [Download, Pre-process and Store PDFs](#download-pre-process-and-store-pdfs)
     - [Custom Dataset for Fine-tuning](#custom-dataset-for-fine-tuning)
     - [Visualization](#visualization)
     - [Classification of PDFs](#classification-of-pdfs)
@@ -28,8 +28,9 @@ Since its inception, PDF has arguably become the most ubiquitous document format
 This repository aims to address these challenges by providing tools and solutions for extracting and transforming data from PDF files into more structured and usable formats, bridging the gap between human-readable and machine-readable data.
 
 ## Main Processing Tasks
-### Pre-processing
-...
+### Download, Pre-process and Store PDFs
+[trump_biden_download_preprocess_store.ipynb](notebooks/trump_biden_download_preprocess_store.ipynb)
+
 ### Custom Dataset for Fine-tuning
 ...
 ### Visualization
