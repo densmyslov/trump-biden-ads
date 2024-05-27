@@ -6,7 +6,7 @@ This repository is a demo of processing a collection of historical PDF documents
 - [Trump and Biden for President Campaigns](#trump-and-biden-for-president-campaigns)
     - [collection of PDF documents, such as contracts, orders, invoices and other documents](#collection-of-pdf-documents-such-as-contracts-orders-invoices-and-other-documents)
 - [Table of Contents](#table-of-contents)
-  - [Trump and Biden for President Campaigns](#trump-and-biden-for-president-campaigns-1)
+  - [Introduction](#introduction)
   - [Main Processing Tasks](#main-processing-tasks)
     - [Pre-processing](#pre-processing)
     - [Custom Dataset for Fine-tuning](#custom-dataset-for-fine-tuning)
@@ -15,7 +15,7 @@ This repository is a demo of processing a collection of historical PDF documents
     - [Retrieval of Values](#retrieval-of-values)
     - [Creating Vector Embeddings](#creating-vector-embeddings)
 
-## Trump and Biden for President Campaigns
+## Introduction
 ...
 
 ## Main Processing Tasks
