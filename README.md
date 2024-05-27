@@ -9,6 +9,7 @@ This repository is a demo of processing a collection of historical PDF documents
   - [Trump and Biden for President Campaigns](#trump-and-biden-for-president-campaigns-1)
   - [Main Processing Tasks](#main-processing-tasks)
     - [Pre-processing](#pre-processing)
+    - [Custom Dataset for Fine-tuning](#custom-dataset-for-fine-tuning)
     - [Visualization](#visualization)
     - [Classification of PDFs](#classification-of-pdfs)
     - [Retrieval of Values](#retrieval-of-values)
@@ -19,6 +20,8 @@ This repository is a demo of processing a collection of historical PDF documents
 
 ## Main Processing Tasks
 ### Pre-processing
+...
+### Custom Dataset for Fine-tuning
 ...
 ### Visualization
 ...
