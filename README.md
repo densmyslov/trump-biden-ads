@@ -7,7 +7,6 @@ This repository is a demo of processing a collection of historical PDF documents
     - [collection of PDF documents, such as contracts, orders, invoices and other documents](#collection-of-pdf-documents-such-as-contracts-orders-invoices-and-other-documents)
 - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
-  - [Introduction](#introduction-1)
   - [Main Processing Tasks](#main-processing-tasks)
     - [Pre-processing](#pre-processing)
     - [Custom Dataset for Fine-tuning](#custom-dataset-for-fine-tuning)
@@ -15,8 +14,6 @@ This repository is a demo of processing a collection of historical PDF documents
     - [Classification of PDFs](#classification-of-pdfs)
     - [Retrieval of Values](#retrieval-of-values)
     - [Creating Vector Embeddings](#creating-vector-embeddings)
-
-## Introduction
 
 ## Introduction
 
