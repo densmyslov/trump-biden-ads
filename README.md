@@ -9,8 +9,7 @@ This repository is a demo of processing a collection of historical PDF documents
   - [Introduction](#introduction)
   - [Main Processing Tasks](#main-processing-tasks)
     - [Download, Pre-process and Store PDFs](#download-pre-process-and-store-pdfs)
-    - [Custom Dataset for Fine-tuning](#custom-dataset-for-fine-tuning)
-    - [Visualization](#visualization)
+    - [Visualization of PDFs](#visualization-of-pdfs)
     - [Classification of PDFs](#classification-of-pdfs)
     - [Retrieval of Values](#retrieval-of-values)
     - [Creating Vector Embeddings](#creating-vector-embeddings)
@@ -27,14 +26,21 @@ Since its inception, PDF has arguably become the most ubiquitous document format
 
 This repository aims to address these challenges by providing tools and solutions for extracting and transforming data from PDF files into more structured and usable formats, bridging the gap between human-readable and machine-readable data.
 
+We will be using a collection of PDF documents, such as contracts, orders, invoices, and other documents related to TV ads from Trump and Biden for President Campaigns, which they are required to disclose to the Federal Communications Commission (FCC) under the Communications Act of 1934. We will use this collection of PDF documents to demonstrate the process of extracting and transforming data from PDF files. The repository will cover the following main processing tasks:
+
 ## Main Processing Tasks
 ### Download, Pre-process and Store PDFs
+The first step in the process is to download the PDF files using [FCC API](https://www.google.com/url?q=https%3A%2F%2Fpublicfiles.fcc.gov%2Fdeveloper), preprocess and store them in the following 3 formats:
+* original pdf files (.pdf)
+* page-by-page image files (.jpg)
+* extracted text organized as json files (.json)
+. The preprocessing step involves extracting text from the PDFs, removing any unwanted characters, and storing the text in a structured format. The structured format can be a CSV file, a SQL database, or any other format that is suitable for further analysis.
 [trump_biden_download_preprocess_store.ipynb](notebooks/trump_biden_download_preprocess_store.ipynb)
 
-### Custom Dataset for Fine-tuning
-...
-### Visualization
-...
+### Visualization of PDFs
+The second step is to visualize the PDF files using the extracted images and text. For this, we will use the [Streamlit](https://streamlit.io) library. Streamlit is an open-source app framework for Machine Learning and Data Science projects. It allows you to create beautiful, interactive web apps for your projects with minimal effort. We will create a Streamlit app that displays the PDF files page by page. The app will allow users to search for specific text, initially in the titles of the PDFs. Once we have implemented the Retrieval of Values task and created vector embeddings, we will build a powerful semantic search engine turbocharged with the RAG (Retrieval Augmented Generation).
+[trump_biden demo app](https://trump-biden.streamlit.app/)
+
 ### Classification of PDFs
 ...
 ### Retrieval of Values
