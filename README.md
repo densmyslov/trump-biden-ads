@@ -30,12 +30,13 @@ We will be using a collection of PDF documents, such as contracts, orders, invoi
 
 ## Main Processing Tasks
 ### Download, Pre-process and Store PDFs
+<a target="_blank" href=https://colab.research.google.com/github/aguille-vert/trump-biden-ads/blob/main/notebooks/trump_biden_download_preprocess_store.ipynb><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>   
 The first step in the process is to download the PDF files using [FCC API](https://www.google.com/url?q=https%3A%2F%2Fpublicfiles.fcc.gov%2Fdeveloper), preprocess and store them in the following 3 formats:
 * original pdf files (.pdf)
 * page-by-page image files (.jpg)
 * extracted text organized as json files (.json)
 . The preprocessing step involves extracting text from the PDFs, removing any unwanted characters, and storing the text in a structured format. The structured format can be a CSV file, a SQL database, or any other format that is suitable for further analysis.
-[trump_biden_download_preprocess_store.ipynb](notebooks/trump_biden_download_preprocess_store.ipynb)
 
 ### Visualization of PDFs
 [trump_biden demo app](https://trump-biden.streamlit.app/)  
