@@ -11,7 +11,10 @@ This repository is a demo of processing a collection of historical PDF documents
     - [Download, Pre-process and Store PDFs](#download-pre-process-and-store-pdfs)
     - [Visualization of PDFs](#visualization-of-pdfs)
     - [Classification of PDFs](#classification-of-pdfs)
-    - [Retrieval of Values](#retrieval-of-values)
+      - [Zero-shot Classification](#zero-shot-classification)
+      - [Analyzing discrepancies](#analyzing-discrepancies)
+      - [Datasets for Fine-tuning](#datasets-for-fine-tuning)
+      - [Fine-tuning/Quantization](#fine-tuningquantization)
     - [Creating Vector Embeddings](#creating-vector-embeddings)
 
 ## Introduction
@@ -44,9 +47,25 @@ The first step in the process is to download the PDF files using [FCC API](https
 The second step is to visualize the PDF files using the extracted images and text. For this, we will use the [Streamlit](https://streamlit.io) library. Streamlit is an open-source app framework for Machine Learning and Data Science projects. It allows you to create beautiful, interactive web apps for your projects with minimal effort. We will create a Streamlit app that displays the PDF files page by page. The app will allow users to search for specific text, initially in the titles of the PDFs. Once we have implemented the Retrieval of Values task and created vector embeddings, we will build a powerful semantic search engine turbocharged with the RAG (Retrieval Augmented Generation).
 
 ### Classification of PDFs
-...
-### Retrieval of Values
-...
+In the PDF collection which we made there are files of different types: contracts, invoices, orders, etc. We don't know the types of the files in advance. However, for further processing, we need to classify the files into different categories. 
+This is a multi-class classification problem. 
+#### Zero-shot Classification
+We will first use 2 zero-shot open-source LLMs to for the initial classification of the PDFs:
+* llama3-70b-8192
+* gemma-7b-it  
+we will use [groq cloud API](https://groq.cloud), since it is the lowest-cost API for this task.  
+To save costs and energy, we will use only the first page of each file for the classification.
+#### Analyzing discrepancies
+We will analyze the discrepancies between the two models, assuming that the correct classification is the one that is agreed upon by both models. We will see that there are too many discrepancies, which means that zero-shot classification is not enough for this task. We will need to fine-tune a model on a labeled dataset.
+#### Datasets for Fine-tuning
+We will then use this information to create a labeled dataset for fine-tuning a model. We will create 2 datasets: one for superfised fine-tuning, the second one for fine-tuning with [DPO objective](https://arxiv.org/abs/2305.18290)
+#### Fine-tuning/Quantization
+Our goal is to find the best balance between accuracy and computational cost.  
+We will experiment with different models and fine-tuning techniques to classify the PDFs:
+* [LoRA](https://arxiv.org/abs/2106.09685)
+* [ReFT](https://arxiv.org/abs/2404.03592)
+* both with [DPO objective](https://arxiv.org/abs/2305.18290)
+
 ### Creating Vector Embeddings
 ...
 
