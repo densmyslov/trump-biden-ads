@@ -13,7 +13,7 @@ This repository is a demo of processing a collection of historical PDF documents
     - [Classification of PDFs](#classification-of-pdfs)
       - [Zero-shot Classification](#zero-shot-classification)
       - [Analyzing discrepancies](#analyzing-discrepancies)
-      - [Datasets for Fine-tuning](#datasets-for-fine-tuning)
+      - [Dataset for Fine-tuning](#dataset-for-fine-tuning)
       - [Fine-tuning/Quantization](#fine-tuningquantization)
     - [Creating Vector Embeddings](#creating-vector-embeddings)
 
@@ -57,7 +57,9 @@ we will use [groq cloud API](https://groq.cloud), since it is the lowest-cost AP
 To save costs and energy, we will use only the first page of each file for the classification.
 #### Analyzing discrepancies
 We will analyze the discrepancies between the two models, assuming that the correct classification is the one that is agreed upon by both models. We will see that there are too many discrepancies, which means that zero-shot classification is not enough for this task. We will need to fine-tune a model on a labeled dataset.
-#### Datasets for Fine-tuning
+#### Dataset for Fine-tuning
+<a target="_blank" href=https://colab.research.google.com/github/aguille-vert/trump-biden-ads/blob/main/notebooks/inference_analysis_dataset.ipynb><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a> 
 We will then use this information to create a labeled dataset for fine-tuning a model. We will create 2 datasets: one for superfised fine-tuning, the second one for fine-tuning with [DPO objective](https://arxiv.org/abs/2305.18290)
 #### Fine-tuning/Quantization
 Our goal is to find the best balance between accuracy and computational cost.  
