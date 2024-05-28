@@ -38,8 +38,9 @@ The first step in the process is to download the PDF files using [FCC API](https
 [trump_biden_download_preprocess_store.ipynb](notebooks/trump_biden_download_preprocess_store.ipynb)
 
 ### Visualization of PDFs
+[trump_biden demo app](https://trump-biden.streamlit.app/)  
+
 The second step is to visualize the PDF files using the extracted images and text. For this, we will use the [Streamlit](https://streamlit.io) library. Streamlit is an open-source app framework for Machine Learning and Data Science projects. It allows you to create beautiful, interactive web apps for your projects with minimal effort. We will create a Streamlit app that displays the PDF files page by page. The app will allow users to search for specific text, initially in the titles of the PDFs. Once we have implemented the Retrieval of Values task and created vector embeddings, we will build a powerful semantic search engine turbocharged with the RAG (Retrieval Augmented Generation).
-[trump_biden demo app](https://trump-biden.streamlit.app/)
 
 ### Classification of PDFs
 ...
