@@ -101,7 +101,8 @@ if st.button(":blue[Show selected files]"):
 
                         btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
                 except:
-                    st.write("Failed to show invoice pages")
+                    st.error("Failed to show invoice pages")
+                    st.error("Try to close and reopen the browser tab with the app")
                     
 
 st.write(files_df.query("completion.notna()").shape[0])
