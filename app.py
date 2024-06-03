@@ -88,17 +88,21 @@ if st.button(":blue[Show selected files]"):
 
             with st.expander(f":green[Show invoice pages:] {row.file_name}"):
 
-                btn_invoice = utils.download_invoice_as_image(row.file_name, byte_invoice_images)
-                tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
-                
-                for ind, page_tab in enumerate(st.tabs(tab_names)):
-                    page_tab.image(invoice_images[ind])
-                    fn=f"{row.file_name}_page_{ind}.jpg"
-                    img_byte_arr = byte_invoice_images[ind]
+                try:
+
+                    btn_invoice = utils.download_invoice_as_image(row.file_name, byte_invoice_images)
+                    tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
+                    
+                    for ind, page_tab in enumerate(st.tabs(tab_names)):
+                        page_tab.image(invoice_images[ind])
+                        fn=f"{row.file_name}_page_{ind}.jpg"
+                        img_byte_arr = byte_invoice_images[ind]
 
 
-                    btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
-                
+                        btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
+                except:
+                    st.write("Failed to show invoice pages")
+                    
 
 st.write(files_df.query("completion.notna()").shape[0])
 
