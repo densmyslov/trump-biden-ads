@@ -61,7 +61,7 @@ if st.session_state['search_string'] !='':
 
 
 
-default_cols=['index','file_name','create_ts','completion']
+default_cols=['index','file_name','create_ts','file_type']
 selection = utils.dataframe_with_selections(files_df[default_cols],
                                             start_date=start_date)
 # st.write(files_df.columns)
@@ -83,6 +83,7 @@ if st.button(":blue[Show selected files]"):
         for row in df_to_show.itertuples():
                     # st.session_state['summary_df'][row[0]] = pd.DataFrame()
             invoice_images = pil_images_to_show[row.file_name]
+            # st.write(invoice_images)
             byte_invoice_images = byte_images_to_show[row.file_name]                                       
 
 
@@ -105,5 +106,5 @@ if st.button(":blue[Show selected files]"):
                     st.error("Try to close and reopen the browser tab with the app")
                     
 
-st.write(files_df.query("completion.notna()").shape[0])
+# st.write(files_df.query("completion.notna()").shape[0])
 

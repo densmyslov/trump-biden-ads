@@ -56,7 +56,7 @@ def dataframe_with_selections(df: pd.DataFrame, init_value: bool = False,
         column_config={"Select": st.column_config.CheckboxColumn(required=True),
                        'create_ts' : st.column_config.DatetimeColumn('Date',
                                                                      format='YYYY-MM-DD'),
-                    'completion': st.column_config.TextColumn('File type')
+                    'file_type': st.column_config.TextColumn('File type')
                                                                      },
         disabled=df.columns,
     )
@@ -97,7 +97,7 @@ def get_image(s3_client,bucket, key):
     buffer.seek(0)
     pil_image = Image.open(buffer)
     # Reset buffer's pointer to the beginning
-    buffer.seek(0)
+    # buffer.seek(0)
     
     # Read the buffer content into bytes
     image_bytes = buffer.read()
@@ -120,10 +120,11 @@ def get_images_to_show(_s3_client,df_to_show):
                 page_image, page_image_bytes = get_image(_s3_client,
                                                             BUCKET, 
                                                             page_image_key)
+                invoice_images.append(page_image)
+                invoice_image_bytes.append(page_image_bytes)
             except:
                 break
-            invoice_images.append(page_image)
-            invoice_image_bytes.append(page_image_bytes)
+
 
         pil_images_to_show[row.file_name] = invoice_images
         byte_images_to_show[row.file_name] = invoice_image_bytes
@@ -138,20 +139,20 @@ def load_invoice_df(_s3_client, name, bucket = BUCKET, counter=None):
     invoice_df, last_modified = pd_read_parquet(_s3_client, bucket, key)
     invoice_df.sort_values('create_ts',ascending=False, inplace=True, ignore_index=True)
 
-    MODEL = 'gemma-7b-it'
-    api = 'groq'
-    key = f"FCC/completions/file-classification/{api}/{MODEL}/completions_df.parquet"
-    completions_df, _ = pd_read_parquet(_s3_client, bucket, key)
-    completions_df['completion'] = completions_df['completion'].apply(lambda x: 
-                            list(json.loads(x).values())[0]
-                            if isinstance(x,str) else x)
-    completions_df['file_name']=completions_df['key'].str.split('/').str[2]
+    # MODEL = 'gemma-7b-it'
+    # api = 'groq'
+    # key = f"FCC/completions/file-classification/{api}/{MODEL}/completions_df.parquet"
+    # completions_df, _ = pd_read_parquet(_s3_client, bucket, key)
+    # completions_df['completion'] = completions_df['completion'].apply(lambda x: 
+    #                         list(json.loads(x).values())[0]
+    #                         if isinstance(x,str) else x)
+    # completions_df['file_name']=completions_df['key'].str.split('/').str[2]
 
-    invoice_df = invoice_df.merge(completions_df[['file_name',
-                                                  'completion']],
-                                                  on='file_name',
-                                                  how = 'left')
-    invoice_df['search_col'] = invoice_df.apply(lambda x: f"{x['file_name']} {x['completion']}", axis=1)
+    # invoice_df = invoice_df.merge(completions_df[['file_name',
+    #                                               'completion']],
+    #                                               on='file_name',
+    #                                               how = 'left')
+    invoice_df['search_col'] = invoice_df.apply(lambda x: f"{x['file_name']} {x['file_type']}", axis=1)
     invoice_df.drop_duplicates(subset=['file_name'],ignore_index=True, inplace=True)
     return invoice_df.reset_index(), last_modified
 
