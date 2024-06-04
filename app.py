@@ -12,7 +12,7 @@ import boto3
 from io import BytesIO
 from zipfile import ZipFile
 
-st.set_page_config(page_title='Invoice Processor', 
+st.set_page_config(page_title='PDF/Image Data Retriever', 
                    page_icon=None, layout="wide", 
                    initial_sidebar_state="auto", 
                    menu_items=None)
