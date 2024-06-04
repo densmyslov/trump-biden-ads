@@ -77,6 +77,9 @@ def download_image(fn, img_byte_arr, page,page_tab):
                                 )
     return btn
 
+
+
+
 @st.experimental_fragment()
 def download_invoice_as_image(fn, byte_invoice_images):
     zip_buffer = create_zip(byte_invoice_images, fn)
@@ -97,7 +100,7 @@ def get_image(s3_client,bucket, key):
     buffer.seek(0)
     pil_image = Image.open(buffer)
     # Reset buffer's pointer to the beginning
-    # buffer.seek(0)
+    buffer.seek(0)
     
     # Read the buffer content into bytes
     image_bytes = buffer.read()
