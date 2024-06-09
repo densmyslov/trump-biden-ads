@@ -89,7 +89,7 @@ def download_invoice_as_pdf(s3_client, fn, col):
     btn = col.download_button(
                 label="Download as PDF file",
                 data=pdf_buffer,
-                file_name=fn,
+                file_name=f"{fn}.pdf",
                 mime="application/pdf",
                 key = f"{fn}_pdf_{count}"
             )
