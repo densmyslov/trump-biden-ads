@@ -107,6 +107,18 @@ def download_invoice_as_zipped_page_images(fn, byte_invoice_images, col):
             )
     return btn
 
+@st.experimental_fragment()
+def download_invoice_as_zipped_page_images(fn, byte_invoice_images, col):
+    zip_buffer = create_zip(byte_invoice_images, fn)
+    btn = col.download_button(
+        label="Download All Pages as Zip",
+        data=zip_buffer.getvalue(),  # Ensure to pass the bytes content
+        file_name=f"{fn}.zip",       # Ensure the file name has .zip extension
+        mime="application/zip",
+        key=fn
+    )
+    return btn
+
 def get_image(s3_client,bucket, key):
     # Use the S3 client to download the file
     
