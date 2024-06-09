@@ -88,10 +88,27 @@ if st.button(":blue[Show selected files]"):
 
 
             with st.expander(f":green[Show invoice pages:] {row.file_name}"):
+                # key = f"FCC/pdfs/{row.file_name}/doc.pdf"
+                # obj = s3_client.get_object(Bucket=BUCKET, Key=key)
+                # pdf_bytes = obj['Body'].read()
+                # pdf_buffer = BytesIO(pdf_bytes)
+                # pdf_buffer.seek(0)
+                # btn = st.download_button(
+                #                             label="Download as PDF file",
+                #                             data=pdf_buffer,
+                #                             file_name=row.file_name,
+                #                             mime="application/pdf",
+                #                             key = f"{row.file_name}_pdf"
+                #                         )
 
                 try:
+                    col1, col2 = st.columns(2)
+                    btn_invoice = utils.download_invoice_as_zipped_page_images(row.file_name, 
+                                                                               byte_invoice_images,
+                                                                               col1)
+                    
+                    btn_pdf_invoice = utils.download_invoice_as_pdf(s3_client, row.file_name, col2)
 
-                    btn_invoice = utils.download_invoice_as_image(row.file_name, byte_invoice_images)
                     tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
                     
                     for ind, page_tab in enumerate(st.tabs(tab_names)):

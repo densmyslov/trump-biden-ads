@@ -68,22 +68,37 @@ def dataframe_with_selections(df: pd.DataFrame, init_value: bool = False,
 
 @st.experimental_fragment()
 def download_image(fn, img_byte_arr, page,page_tab):
+    count = choice(range(1000000))
     btn = page_tab.download_button(
                                     label="Download page",
                                     data=img_byte_arr,
                                     file_name=fn,
                                     mime="image/png",
-                                    key = f"{fn}_page_{page}"
+                                    key = f"{fn}_page_{page}_{count}"
                                 )
     return btn
 
-
-
+@st.experimental_fragment()
+def download_invoice_as_pdf(s3_client, fn, col):
+    key = f"FCC/pdfs/{fn}/doc.pdf"
+    obj = s3_client.get_object(Bucket=BUCKET, Key=key)
+    pdf_bytes = obj['Body'].read()
+    pdf_buffer = BytesIO(pdf_bytes)
+    pdf_buffer.seek(0)
+    count = choice(range(1000000))
+    btn = col.download_button(
+                label="Download as PDF file",
+                data=pdf_buffer,
+                file_name=fn,
+                mime="application/pdf",
+                key = f"{fn}_pdf_{count}"
+            )
+    return btn
 
 @st.experimental_fragment()
-def download_invoice_as_image(fn, byte_invoice_images):
+def download_invoice_as_zipped_page_images(fn, byte_invoice_images, col):
     zip_buffer = create_zip(byte_invoice_images, fn)
-    btn = st.download_button(
+    btn = col.download_button(
                 label="Download All Pages as Zip",
                 data=zip_buffer,
                 file_name=fn,
