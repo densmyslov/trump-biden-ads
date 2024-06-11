@@ -44,9 +44,7 @@ def dataframe_with_selections(df: pd.DataFrame, init_value: bool = False,
     df_with_selections = df.copy()
     if start_date:
         df_with_selections = df_with_selections.query("create_ts>=@start_date")
-    # selected_all = st.toggle("Select all", key='select_all')
-    # if selected_all:
-    #     init_value = True
+
     df_with_selections.insert(0, "Select", init_value)
 
     # Get dataframe row-selections from user with st.data_editor
@@ -169,22 +167,21 @@ def load_invoice_df(_s3_client, name, bucket = BUCKET, counter=None):
     invoice_df, last_modified = pd_read_parquet(_s3_client, bucket, key)
     invoice_df.sort_values('create_ts',ascending=False, inplace=True, ignore_index=True)
 
-    # MODEL = 'gemma-7b-it'
-    # api = 'groq'
-    # key = f"FCC/completions/file-classification/{api}/{MODEL}/completions_df.parquet"
-    # completions_df, _ = pd_read_parquet(_s3_client, bucket, key)
-    # completions_df['completion'] = completions_df['completion'].apply(lambda x: 
-    #                         list(json.loads(x).values())[0]
-    #                         if isinstance(x,str) else x)
-    # completions_df['file_name']=completions_df['key'].str.split('/').str[2]
-
-    # invoice_df = invoice_df.merge(completions_df[['file_name',
-    #                                               'completion']],
-    #                                               on='file_name',
-    #                                               how = 'left')
     invoice_df['search_col'] = invoice_df.apply(lambda x: f"{x['file_name']} {x['file_type']}", axis=1)
     invoice_df.drop_duplicates(subset=['file_name'],ignore_index=True, inplace=True)
     return invoice_df.reset_index(), last_modified
+
+@st.cache_data()
+def load_gpt_wrong_df(_s3_client, bucket = BUCKET, counter=None):
+    """
+    dataset of wrong predictions on april_invoices_df from GPT-4o model
+    see 'create_truth_datasets.ipynb'
+    """
+    key = 'datasets/FCC/completions/april_2024_biden_invoices/wrong_df.parquet'
+    wrong_df, last_modified = pd_read_parquet(_s3_client, bucket, key)
+    
+    return wrong_df.reset_index()
+
 
 def pd_read_parquet(_s3_client,bucket,key,columns=None):
 

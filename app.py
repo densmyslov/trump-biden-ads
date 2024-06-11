@@ -26,102 +26,203 @@ s3_client = boto3.client('s3',
 
 BUCKET = utils.BUCKET
 
-if 'search_string' not in st.session_state:
-    st.session_state['search_string'] = ''
+tab_view_dataset, tab_zero_shot =  st.tabs(('View dataset','Zero-shot results'))
 
-# select which capmaign to show: Trump or Biden
-campaign_name = st.sidebar.radio('select candidate',('Biden','Trump')).lower()
+with tab_view_dataset:
+    if 'search_string' not in st.session_state:
+        st.session_state['search_string'] = ''
 
-
-files_df, last_update = utils.load_invoice_df(s3_client, campaign_name, bucket = BUCKET, counter=None)
-min_date = files_df['create_ts'].tolist()[-1]
-start_date = st.sidebar.date_input("Select start_date", 
-                                   min_value=datetime.date(min_date),
-                                   max_value=datetime.now(),
-                                   value=datetime.date(min_date))
-start_date = pd.to_datetime(start_date,utc=True)
-
-col1, col2 = st.columns(2)
-col1.success(f"Last update: {last_update}")
-col2.success(f"Total number of files: {files_df.shape[0]}")
-
-search_string = st.sidebar.text_input('search text', value = st.session_state['search_string'])
-st.session_state['search_string'] = search_string
-if st.sidebar.button('clear search box'):
-    st.session_state['search_string']=''
-
-if st.session_state['search_string'] !='':
-    try:
-        search_string = st.session_state['search_string']
-        files_df = files_df.query("search_col.str.contains(@search_string, case=False)")
-    except:
-        st.error("failed to find file which contains search string")
+    # select which capmaign to show: Trump or Biden
+    campaign_name = st.sidebar.radio('select candidate',('Biden','Trump')).lower()
 
 
+    files_df, last_update = utils.load_invoice_df(s3_client, campaign_name, bucket = BUCKET, counter=None)
+    min_date = files_df['create_ts'].tolist()[-1]
+    start_date = st.sidebar.date_input("Select start_date", 
+                                    min_value=datetime.date(min_date),
+                                    max_value=datetime.now(),
+                                    value=datetime.date(min_date))
+    start_date = pd.to_datetime(start_date,utc=True)
 
+    col1, col2 = st.columns(2)
+    col1.success(f"Last update: {last_update}")
+    col2.success(f"Total number of files: {files_df.shape[0]}")
 
+    search_string = st.sidebar.text_input('search text', value = st.session_state['search_string'])
+    st.session_state['search_string'] = search_string
+    if st.sidebar.button('clear search box'):
+        st.session_state['search_string']=''
 
-default_cols=['index','file_name','create_ts','file_type']
-selection = utils.dataframe_with_selections(files_df[default_cols],
-                                            start_date=start_date)
-# st.write(files_df.columns)
+    if st.session_state['search_string'] !='':
+        try:
+            search_string = st.session_state['search_string']
+            files_df = files_df.query("search_col.str.contains(@search_string, case=False)")
+        except:
+            st.error("failed to find file which contains search string")
 
 
 
-if st.button(":blue[Show selected files]"):
-    if selection.empty:
-        st.error("You have not selected any files")
-        st.stop()
-
-    else:
-
-        df_to_show = files_df.loc[selection.index,:].copy()
-        st.dataframe(df_to_show[default_cols])
-
-        pil_images_to_show, byte_images_to_show = utils.get_images_to_show(s3_client,df_to_show)
-
-        for row in df_to_show.itertuples():
-                    # st.session_state['summary_df'][row[0]] = pd.DataFrame()
-            invoice_images = pil_images_to_show[row.file_name]
-            # st.write(invoice_images)
-            byte_invoice_images = byte_images_to_show[row.file_name]                                       
 
 
-            with st.expander(f":green[Show invoice pages:] {row.file_name}"):
-                # key = f"FCC/pdfs/{row.file_name}/doc.pdf"
-                # obj = s3_client.get_object(Bucket=BUCKET, Key=key)
-                # pdf_bytes = obj['Body'].read()
-                # pdf_buffer = BytesIO(pdf_bytes)
-                # pdf_buffer.seek(0)
-                # btn = st.download_button(
-                #                             label="Download as PDF file",
-                #                             data=pdf_buffer,
-                #                             file_name=row.file_name,
-                #                             mime="application/pdf",
-                #                             key = f"{row.file_name}_pdf"
-                #                         )
-
-                try:
-                    col1, col2 = st.columns(2)
-                    btn_invoice = utils.download_invoice_as_zipped_page_images(row.file_name, 
-                                                                               byte_invoice_images,
-                                                                               col1)
-                    
-                    btn_pdf_invoice = utils.download_invoice_as_pdf(s3_client, row.file_name, col2)
-
-                    tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
-                    
-                    for ind, page_tab in enumerate(st.tabs(tab_names)):
-                        page_tab.image(invoice_images[ind])
-                        fn=f"{row.file_name}_page_{ind}.jpg"
-                        img_byte_arr = byte_invoice_images[ind]
+    default_cols=['index','file_name','create_ts','file_type']
+    selection = utils.dataframe_with_selections(files_df[default_cols],
+                                                start_date=start_date)
+    # st.write(files_df.columns)
 
 
-                        btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
-                except:
-                    st.error("Failed to find images of file pages")
-                    # st.error("Try to close and reopen the browser tab with the app")
-                    
 
-# st.write(files_df.query("completion.notna()").shape[0])
+    if st.button(":blue[Show selected files]"):
+        if selection.empty:
+            st.error("You have not selected any files")
+            st.stop()
+
+        else:
+
+            df_to_show = files_df.loc[selection.index,:].copy()
+            st.dataframe(df_to_show[default_cols])
+
+            pil_images_to_show, byte_images_to_show = utils.get_images_to_show(s3_client,df_to_show)
+
+            for row in df_to_show.itertuples():
+                        # st.session_state['summary_df'][row[0]] = pd.DataFrame()
+                invoice_images = pil_images_to_show[row.file_name]
+                # st.write(invoice_images)
+                byte_invoice_images = byte_images_to_show[row.file_name]                                       
+
+
+                with st.expander(f":green[Show invoice pages:] {row.file_name}"):
+
+
+                    try:
+                        col1, col2 = st.columns(2)
+                        btn_invoice = utils.download_invoice_as_zipped_page_images(row.file_name, 
+                                                                                byte_invoice_images,
+                                                                                col1)
+                        
+                        btn_pdf_invoice = utils.download_invoice_as_pdf(s3_client, row.file_name, col2)
+
+                        tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
+                        
+                        for ind, page_tab in enumerate(st.tabs(tab_names)):
+                            page_tab.image(invoice_images[ind])
+                            fn=f"{row.file_name}_page_{ind}.jpg"
+                            img_byte_arr = byte_invoice_images[ind]
+
+
+                            btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
+                    except:
+                        st.error("Failed to find images of file pages")
+                        # st.error("Try to close and reopen the browser tab with the app")
+                        
+
+with tab_zero_shot:
+    wrong_df = utils.load_gpt_wrong_df(s3_client, bucket = BUCKET, counter=None)
+
+    selection_wrong_df = utils.dataframe_with_selections(wrong_df)
+    if st.button(":blue[Show selected files]", key = 'btn_wrong_df'):
+        if selection_wrong_df.empty:
+            st.error("You have not selected any files")
+            st.stop()
+
+        else:
+
+            wrong_df_to_show = wrong_df.loc[selection_wrong_df.index,:].copy()
+            st.dataframe(wrong_df_to_show)
+
+            pil_images_to_show, byte_images_to_show = utils.get_images_to_show(s3_client,wrong_df_to_show)
+
+            for row in wrong_df_to_show.itertuples():
+                        # st.session_state['summary_df'][row[0]] = pd.DataFrame()
+                invoice_images = pil_images_to_show[row.file_name]
+                # st.write(invoice_images)
+                byte_invoice_images = byte_images_to_show[row.file_name]                                       
+
+
+                with st.expander(f":green[Show invoice pages:] {row.file_name}"):
+
+
+                    try:
+                        col1, col2 = st.columns(2)
+                        btn_invoice = utils.download_invoice_as_zipped_page_images(row.file_name, 
+                                                                                byte_invoice_images,
+                                                                                col1)
+                        
+                        btn_pdf_invoice = utils.download_invoice_as_pdf(s3_client, row.file_name, col2)
+
+                        tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
+                        
+                        for ind, page_tab in enumerate(st.tabs(tab_names)):
+                            page_tab.image(invoice_images[ind])
+                            fn=f"{row.file_name}_page_{ind}.jpg"
+                            img_byte_arr = byte_invoice_images[ind]
+
+
+                            btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
+                    except:
+                        st.error("Failed to find images of file pages")
+
+
+    prompt_content = """
+### Question1: What are the summary fields in the invoice ?
+
+### Question2: How many line items are in the invoice ?
+
+### Question3: How many spots are in the invoice ?
+
+### Question4: What are the headers of the line items in the invoice ?
+
+### Question5: Which headers correspond to:
+    * TV program description
+    * Amount paid for Spot
+    * Spot Air Date
+
+
+### Question6: Analyze each line item, for each header from the Answer to Question5 assign
+corresponding spot value.
+
+### Question7: Add all spot_amounts and output the total sum
+
+### Answer_example =
+{
+  'Summary_fields' : {
+                        'number': '3983920-1',
+                        'date': '2023-09-29',
+                        'gross_amount': 10000.00,
+                        'net_amount': 9500.00,
+                        'issuer': 'WTAE',
+                                        }
+                    },
+  'Line_items_num' : 10,
+  'Spots_num' : 12,
+  'Headers_mapping':
+                    {'description' : 'Description',
+                    'spot_amount' : 'Amount',
+                    'air_date' : 'Air Date'},
+  'Line_items' : [{
+                      'line_num': 1,
+                      'spot_num' : 1,
+                      'air_date' : '2024-03-13',
+                      'description': '6-7am News',
+                      'spot_amount': 750.00
+                      },
+                      {
+                      'line_num': 5,
+                      'spot_num' : 6,
+                      'air_date' : '2024-03-15',
+                      'description': '6-7am News',
+                      'spot_amount': 1750.00
+                      }],
+  'spot_amounts_total' = 2500.00
+
+}
+
+
+Answer in JSON format
+"""
+    
+    
+
+    with st.expander("Show prompt"):
+        st.code(prompt_content)
+
 
