@@ -162,28 +162,28 @@ with tab_zero_shot:
                     byte_invoice_images = byte_images_to_show[row.file_name]                                       
 
 
-                    with st.expander(f":green[Show invoice pages:] {row.file_name}"):
+                    # with st.expander(f":green[Show invoice pages:] {row.file_name}"):
 
 
-                        try:
-                            col1, col2 = st.columns(2)
-                            btn_invoice = utils.download_invoice_as_zipped_page_images(row.file_name, 
-                                                                                    byte_invoice_images,
-                                                                                    col1)
-                            
-                            btn_pdf_invoice = utils.download_invoice_as_pdf(s3_client, row.file_name, col2)
+                    try:
+                        col1, col2 = st.columns(2)
+                        btn_invoice = utils.download_invoice_as_zipped_page_images(row.file_name, 
+                                                                                byte_invoice_images,
+                                                                                col1)
+                        
+                        btn_pdf_invoice = utils.download_invoice_as_pdf(s3_client, row.file_name, col2)
 
-                            tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
-                            
-                            for ind, page_tab in enumerate(st.tabs(tab_names)):
-                                page_tab.image(invoice_images[ind])
-                                fn=f"{row.file_name}_page_{ind}.jpg"
-                                img_byte_arr = byte_invoice_images[ind]
+                        tab_names = [f"page {i+1}" for i in range(len(invoice_images))]
+                        
+                        for ind, page_tab in enumerate(st.tabs(tab_names)):
+                            page_tab.image(invoice_images[ind])
+                            fn=f"{row.file_name}_page_{ind}.jpg"
+                            img_byte_arr = byte_invoice_images[ind]
 
 
-                                btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
-                        except:
-                            st.error("Failed to find images of file pages")
+                            btn_page = utils.download_image(fn, img_byte_arr, ind,page_tab)
+                    except:
+                        st.error("Failed to find images of file pages")
 
 
         prompt_content = """
