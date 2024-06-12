@@ -26,7 +26,7 @@ s3_client = boto3.client('s3',
 
 BUCKET = utils.BUCKET
 
-tab_view_dataset, tab_zero_shot =  st.tabs(('View dataset','Zero-shot results'))
+tab_view_dataset, tab_zero_shot =  st.tabs(('View dataset','Wrong predictions by GPT-4o'))
 
 # Initialize session state for view
 if 'view' not in st.session_state:
