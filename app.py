@@ -19,7 +19,6 @@ st.set_page_config(page_title='PDF/Image Data Retriever',
 
 st.title(':orange[Trump vs Biden: TV Ads Analysis]')
 
-st.write(utils.AWS_ACCESS_KEY_ID)
 
 s3_client = boto3.client('s3',
             aws_access_key_id = utils.AWS_ACCESS_KEY_ID,
